@@ -2,49 +2,121 @@
 Treehouse Techdegree:
 FSJS project 2 - List Filter and Pagination
 ******************************************/
+//define global variables
+let listItemElements = document.querySelectorAll('li');
+let numberPerPage = 10;
+let p = document.createElement('p');
+p.innerHTML = "No students found";
+p.style.display = "none";
+
+//function to show page
+function showPage(list, page) {
+   let startIndex = (page * numberPerPage) - numberPerPage;
+   let endIndex = page * numberPerPage;
+
+   for(let i = 0; i < list.length; i++) {
+      if(i >= startIndex && i < endIndex) {
+         list[i].style.display = '';
+      } else {
+         list[i].style.display = 'none';
+      }
+   }
+}
+
+//function to create and append DOM elements
+function appendPageLinks(list) {
+   const pagDiv = document.createElement('div');
+   const pageDiv = document.querySelector('.page');
+   const ul = document.createElement('ul');
+   const pagesNeeded = Math.ceil(list.length / 10);
+
+   pagDiv.className = "pagination";
+
+   pageDiv.appendChild(pagDiv);
+   pagDiv.appendChild(ul);
+
    
-// Study guide for this project - https://drive.google.com/file/d/1OD1diUsTMdpfMDv677TfL1xO2CEkykSz/view?usp=sharing
+   for(let i = 0; i < pagesNeeded; i++){
+      const li = document.createElement('li');
+      ul.appendChild(li);
+      const a = document.createElement('a');
+      a.href = '#';
+      a.textContent = i + 1;
+      li.appendChild(a);
+   }
+
+   const anchors = document.querySelectorAll('a');
+
+   ul.firstElementChild.firstElementChild.className = "active";
+
+   for(let i = 0; i < anchors.length; i++) {
+      anchors[i].addEventListener('click', (e) => {
+   const liCollection = ul.getElementsByTagName('li');
+
+   for(let i = 0; i < liCollection.length; i++) {
+      liCollection.item(i).firstElementChild.className = "";
+   }
+      e.target.className = "active";
+      showPage(listItemElements, e.target.textContent);
+   })
+}
+}
 
 
-/*** 
-   Add your global variables that store the DOM elements you will 
-   need to reference and/or manipulate. 
+//function to create and append search bar elements
+
+function appendSearchBar () {
+   const searchBarDiv = document.createElement('div');
+   const searchBar = document.createElement('input');
+   const searchBarButton = document.createElement('button');
+
+   searchBar.placeholder = "Search for students...";
+   searchBar.id = "search-bar";
+   searchBar.setAttribute('onkeyup', 'searchStudents()');
+   searchBarButton.innerHTML = "Search";
+   searchBarButton.setAttribute('click', 'searchStudents()');
+
+   searchBarDiv.appendChild(searchBar);
+   searchBarDiv.appendChild(searchBarButton);
+   document.querySelector('h2').appendChild(searchBarDiv);
+}
+
+appendSearchBar();
+
+//search bar functionality
+
+function searchStudents() {
+   let search = document.querySelector('input').value.toUpperCase();
+   let students = document.querySelectorAll('.student-item');
+   let studentNames = document.querySelectorAll('h3');
+   let searchResults = [];
    
-   But be mindful of which variables should be global and which 
-   should be locally scoped to one of the two main functions you're 
-   going to create. A good general rule of thumb is if the variable 
-   will only be used inside of a function, then it can be locally 
-   scoped to that function.
-***/
+   for(let i = 0; i < studentNames.length; i++) {
+      if(studentNames[i].innerHTML.toUpperCase() === search) {
+         students[i].style.display = "";
+         searchResults.push(students[i]);
+         document.querySelector('.page').removeChild(document.querySelector('.pagination'));
+         appendPageLinks(searchResults);
+         break;
+      } else {
+         searchResults = [];
+         students[i].style.display = "none";
+         p.style.display = "block";
+      }
+   }
+      if (!search) {
+      searchResults = [];
+      document.querySelector('.page').removeChild(document.querySelector('.pagination'));         
+      appendPageLinks(listItemElements);
+      showPage(listItemElements, 1);
+      p.style.display = "none";
+}
+      if(searchResults.length) {
+         p.style.display = "none";
+      }
+}
 
-
-
-
-/*** 
-   Create the `showPage` function to hide all of the items in the 
-   list except for the ten you want to show.
-
-   Pro Tips: 
-     - Keep in mind that with a list of 54 students, the last page 
-       will only display four.
-     - Remember that the first student has an index of 0.
-     - Remember that a function `parameter` goes in the parens when 
-       you initially define the function, and it acts as a variable 
-       or a placeholder to represent the actual function `argument` 
-       that will be passed into the parens later when you call or 
-       "invoke" the function 
-***/
-
-
-
-
-/*** 
-   Create the `appendPageLinks function` to generate, append, and add 
-   functionality to the pagination buttons.
-***/
-
-
-
-
-
-// Remember to delete the comments that came with this file, and replace them with your own code comments.
+//function calls
+appendPageLinks(listItemElements);
+showPage(listItemElements, 1);
+document.querySelector('.page').appendChild(p);
