@@ -8,6 +8,8 @@ let numberPerPage = 10;
 let p = document.createElement('p');
 p.innerHTML = "No students found";
 p.style.display = "none";
+p.id = "none-found";
+document.querySelector('.page').appendChild(p);
 
 //function to show page
 function showPage(list, page) {
@@ -72,9 +74,8 @@ function appendSearchBar () {
 
    searchBar.placeholder = "Search for students...";
    searchBar.id = "search-bar";
-   searchBar.setAttribute('onkeyup', 'searchStudents()');
+   searchBarButton.id = "search-bar-button";
    searchBarButton.innerHTML = "Search";
-   searchBarButton.setAttribute('click', 'searchStudents()');
 
    searchBarDiv.appendChild(searchBar);
    searchBarDiv.appendChild(searchBarButton);
@@ -84,39 +85,42 @@ function appendSearchBar () {
 appendSearchBar();
 
 //search bar functionality
-
-function searchStudents() {
-   let search = document.querySelector('input').value.toUpperCase();
-   let students = document.querySelectorAll('.student-item');
-   let studentNames = document.querySelectorAll('h3');
-   let searchResults = [];
-   
-   for(let i = 0; i < studentNames.length; i++) {
-      if(studentNames[i].innerHTML.toUpperCase() === search) {
-         students[i].style.display = "";
-         searchResults.push(students[i]);
-         document.querySelector('.page').removeChild(document.querySelector('.pagination'));
-         appendPageLinks(searchResults);
-         break;
-      } else {
-         searchResults = [];
-         students[i].style.display = "none";
-         p.style.display = "block";
-      }
+const search = document.querySelector('#search-bar');
+const searchBarButton = document.querySelector('#search-bar-button');
+search.setAttribute('onkeyup', 'searchStudents(search, listItemElements)');
+search.addEventListener('keyup', () => {
+   if(!(document.querySelectorAll('.match').length) && search.value !== ""){
+   document.querySelector('#none-found').style.display = "";
+   } else {
+      document.querySelector('#none-found').style.display = "none";
    }
-      if (!search) {
-      searchResults = [];
-      document.querySelector('.page').removeChild(document.querySelector('.pagination'));         
-      appendPageLinks(listItemElements);
-      showPage(listItemElements, 1);
-      p.style.display = "none";
 }
-      if(searchResults.length) {
-         p.style.display = "none";
-      }
-}
+)
+searchBarButton.setAttribute('click', 'searchStudents(search, listItemElements)');
 
+function searchStudents(search, students) {
+   for(let i = 0; i < students.length; i++) {
+      students[i].classList.remove('match');
+      document.querySelector('.pagination').remove('ul');
+    if(search.value.length !== 0 && students[i].textContent.toLowerCase().includes(search.value.toLowerCase())) {
+    students[i].classList.add('match'); 
+    let matched = document.querySelectorAll('.match');
+    for(let i = 0; i < matched.length; i++) {
+       matched[i].style.display = "";
+    }
+    appendPageLinks(matched);
+    showPage(matched, 1);
+    } else if(search.value.length === 0) {
+      showPage(listItemElements, 1);
+      students[i].style.display = "";
+      appendPageLinks(listItemElements);
+   } else {
+       students[i].style.display = "none";
+       appendPageLinks('<ul></ul>');
+      }
+    }
+  }
+   
 //function calls
 appendPageLinks(listItemElements);
 showPage(listItemElements, 1);
-document.querySelector('.page').appendChild(p);
