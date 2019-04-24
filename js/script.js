@@ -74,12 +74,14 @@ function appendSearchBar () {
 
    searchBar.placeholder = "Search for students...";
    searchBar.id = "search-bar";
+   searchBar.className = 'student-search';
    searchBarButton.id = "search-bar-button";
+   searchBarButton.className = 'student-search';
    searchBarButton.innerHTML = "Search";
 
    searchBarDiv.appendChild(searchBar);
    searchBarDiv.appendChild(searchBarButton);
-   document.querySelector('h2').appendChild(searchBarDiv);
+   document.querySelector('.page-header').appendChild(searchBarDiv);
 }
 
 appendSearchBar();
