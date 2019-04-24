@@ -114,15 +114,8 @@ searchBarButton.setAttribute('click', 'searchStudents(search, listItemElements)'
 function searchStudents(search, students) {
    for(let i = 0; i < students.length; i++) {
       students[i].classList.remove('match');
-      //document.querySelector('.pagination').remove();
     if(search.value.length !== 0 && students[i].querySelector('h3').textContent.toLowerCase().includes(search.value.toLowerCase())) {
     students[i].classList.add('match'); 
-    //let matched = document.querySelectorAll('.match');
-    //for(let i = 0; i < matched.length; i++) {
-    //   matched[i].style.display = "";
-    //}
-    //appendPageLinks(matched);
-    //showPage(matched, 1);
     } else if(search.value.length === 0) {
       students[i].style.display = "";
    } else {
