@@ -59,7 +59,7 @@ function appendPageLinks(list) {
       liCollection.item(i).firstElementChild.className = "";
    }
       e.target.className = "active";
-      showPage(listItemElements, e.target.textContent);
+      showPage(list, e.target.textContent);
    })
 }
 }
@@ -91,8 +91,21 @@ search.setAttribute('onkeyup', 'searchStudents(search, listItemElements)');
 search.addEventListener('keyup', () => {
    if(!(document.querySelectorAll('.match').length) && search.value !== ""){
    document.querySelector('#none-found').style.display = "";
-   } else {
+   document.querySelector('.pagination').remove();
+   appendPageLinks('<ul></ul>');
+   } else if(document.querySelectorAll('.match').length) {
       document.querySelector('#none-found').style.display = "none";
+      document.querySelector('.pagination').remove();
+      let matched = document.querySelectorAll('.match');
+      for(let i = 0; i < matched.length; i++) {
+         matched[i].style.display = "";
+      }
+      appendPageLinks(matched);
+      showPage(matched, 1);     
+   } else if(search.value == "") {
+      document.querySelector('.pagination').remove();
+      appendPageLinks(listItemElements);
+      showPage(listItemElements, 1);
    }
 }
 )
@@ -101,22 +114,19 @@ searchBarButton.setAttribute('click', 'searchStudents(search, listItemElements)'
 function searchStudents(search, students) {
    for(let i = 0; i < students.length; i++) {
       students[i].classList.remove('match');
-      document.querySelector('.pagination').remove('ul');
-    if(search.value.length !== 0 && students[i].textContent.toLowerCase().includes(search.value.toLowerCase())) {
+      //document.querySelector('.pagination').remove();
+    if(search.value.length !== 0 && students[i].querySelector('h3').textContent.toLowerCase().includes(search.value.toLowerCase())) {
     students[i].classList.add('match'); 
-    let matched = document.querySelectorAll('.match');
-    for(let i = 0; i < matched.length; i++) {
-       matched[i].style.display = "";
-    }
-    appendPageLinks(matched);
-    showPage(matched, 1);
+    //let matched = document.querySelectorAll('.match');
+    //for(let i = 0; i < matched.length; i++) {
+    //   matched[i].style.display = "";
+    //}
+    //appendPageLinks(matched);
+    //showPage(matched, 1);
     } else if(search.value.length === 0) {
-      showPage(listItemElements, 1);
       students[i].style.display = "";
-      appendPageLinks(listItemElements);
    } else {
        students[i].style.display = "none";
-       appendPageLinks('<ul></ul>');
       }
     }
   }
