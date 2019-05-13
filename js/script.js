@@ -1,6 +1,8 @@
-/******************************************
-JavaScript List Filtering and Pagination App.
-******************************************/
+/*
+   JavaScript List Pagination and Filtering App.
+   script.js
+*/
+
 //define global variables
 
 let listItemElements = document.querySelectorAll('li');
