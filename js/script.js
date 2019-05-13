@@ -1,17 +1,24 @@
 /******************************************
-Treehouse Techdegree:
-FSJS project 2 - List Filter and Pagination
+JavaScript List Filtering and Pagination App.
 ******************************************/
 //define global variables
+
 let listItemElements = document.querySelectorAll('li');
 let numberPerPage = 10;
 let p = document.createElement('p');
+
+//add 'No students found' inner HTML to the <p> element created
+
 p.innerHTML = "No students found";
 p.style.display = "none";
 p.id = "none-found";
+
+//append <p> element to the DOM
+
 document.querySelector('.page').appendChild(p);
 
-//function to show page
+//show page
+
 function showPage(list, page) {
    let startIndex = (page * numberPerPage) - numberPerPage;
    let endIndex = page * numberPerPage;
@@ -25,11 +32,15 @@ function showPage(list, page) {
    }
 }
 
-//function to create and append DOM elements
+//create and append student DOM elements
+
 function appendPageLinks(list) {
    const pagDiv = document.createElement('div');
    const pageDiv = document.querySelector('.page');
    const ul = document.createElement('ul');
+
+//ten students per page
+
    const pagesNeeded = Math.ceil(list.length / 10);
 
    pagDiv.className = "pagination";
@@ -37,6 +48,7 @@ function appendPageLinks(list) {
    pageDiv.appendChild(pagDiv);
    pagDiv.appendChild(ul);
 
+//page navigation
    
    for(let i = 0; i < pagesNeeded; i++){
       const li = document.createElement('li');
@@ -49,11 +61,17 @@ function appendPageLinks(list) {
 
    const anchors = document.querySelectorAll('a');
 
+//make page 1 navigation item active on initial page load
+
    ul.firstElementChild.firstElementChild.className = "active";
+
+//add click event listener to each page navigation element
 
    for(let i = 0; i < anchors.length; i++) {
       anchors[i].addEventListener('click', (e) => {
-   const liCollection = ul.getElementsByTagName('li');
+      const liCollection = ul.getElementsByTagName('li');
+
+//remove and reassign active class according to the navigation link clicked
 
    for(let i = 0; i < liCollection.length; i++) {
       liCollection.item(i).firstElementChild.className = "";
@@ -65,7 +83,7 @@ function appendPageLinks(list) {
 }
 
 
-//function to create and append search bar elements
+//create and append search bar and button
 
 function appendSearchBar () {
    const searchBarDiv = document.createElement('div');
@@ -87,14 +105,24 @@ function appendSearchBar () {
 appendSearchBar();
 
 //search bar functionality
+//handle pagination on search
 const search = document.querySelector('#search-bar');
 const searchBarButton = document.querySelector('#search-bar-button');
+
+//search performed each time a key is pressed
+
 search.setAttribute('onkeyup', 'searchStudents(search, listItemElements)');
 search.addEventListener('keyup', () => {
+
+//no items found despite a search term having been entered
+
    if(!(document.querySelectorAll('.match').length) && search.value !== ""){
    document.querySelector('#none-found').style.display = "";
    document.querySelector('.pagination').remove();
    appendPageLinks('<ul></ul>');
+
+//search term matches with at least one item
+
    } else if(document.querySelectorAll('.match').length) {
       document.querySelector('#none-found').style.display = "none";
       document.querySelector('.pagination').remove();
@@ -103,7 +131,10 @@ search.addEventListener('keyup', () => {
          matched[i].style.display = "";
       }
       appendPageLinks(matched);
-      showPage(matched, 1);     
+      showPage(matched, 1);
+      
+//no search term entered
+
    } else if(search.value == "") {
       document.querySelector('.pagination').remove();
       appendPageLinks(listItemElements);
@@ -113,13 +144,27 @@ search.addEventListener('keyup', () => {
 )
 searchBarButton.setAttribute('click', 'searchStudents(search, listItemElements)');
 
+//perform search
+
 function searchStudents(search, students) {
+
+//remove 'match' class from all student elements
+
    for(let i = 0; i < students.length; i++) {
       students[i].classList.remove('match');
+
+//handle search term matching student item(s)
+
     if(search.value.length !== 0 && students[i].querySelector('h3').textContent.toLowerCase().includes(search.value.toLowerCase())) {
     students[i].classList.add('match'); 
+
+//handle no search term entered
+
     } else if(search.value.length === 0) {
       students[i].style.display = "";
+
+//handle search term matching no student items
+
    } else {
        students[i].style.display = "none";
       }
